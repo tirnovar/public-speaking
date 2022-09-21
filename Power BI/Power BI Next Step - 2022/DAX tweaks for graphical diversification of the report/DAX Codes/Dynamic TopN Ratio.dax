@@ -1,0 +1,19 @@
+Dynamic Ratio of TOPN Sales =
+    VAR _nProducts = [Threshold Value]
+    VAR _rankingGroup = SELECTEDVALUE ( TableOfProduct[label] )
+    VAR _topProducts = 
+        TOPN ( _nProducts, 
+            ALLSELECTED ( TableOfProduct ), 
+            [# Sum of Quantity] 
+        )
+    RETURN
+    SWITCH ( TRUE(),
+            _rankingGroup = "products", 
+                CALCULATE ( [# Sum of Quantity], KEEPFILTERS ( _topProducts ) ),
+            _rankingGroup = "others",
+                VAR _topCalculated = CALCULATE ( [# Sum of Quantity], _topProducts )
+                VAR _allAmount = CALCULATE ( [# Sum of Quantity], ALLSELECTED ( TableOfProduct ) )
+                VAR _result = _allAmount - _topCalculated
+                RETURN 
+                    _result
+    )

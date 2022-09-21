@@ -1,0 +1,11 @@
+colorOfBarsByParameter = 
+    VAR _avgUp = [# Average (+Procentage)] 
+    VAR _avgDown = [# Average (-Procentage)] 
+    VAR _value = [# Sum of Quantity] 
+    RETURN
+        SWITCH ( 
+            TRUE (), 
+            _value > _avgUp, "#347B2B", 
+            _value < _avgDown, "#FF5F57", 
+            "#E2E2E2" 
+        )

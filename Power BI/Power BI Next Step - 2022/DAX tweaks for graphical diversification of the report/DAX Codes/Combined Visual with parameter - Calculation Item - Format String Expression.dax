@@ -1,0 +1,26 @@
+ShowDataLabelsByParameter (Calculation Item) = 
+    SWITCH ( 
+        TRUE (), 
+        ISSELECTEDMEASURE ( 
+            [# Average Of Total], 
+            [# Average (+Procentage)], 
+            [# Average (-Procentage)] 
+        ), 
+            VAR _maxOfRange = MAXX ( ALLSELECTED ( DateKey[Month] ), DateKey[Month] ) 
+            VAR _selectedMonth = SELECTEDVALUE ( DateKey[Month] ) 
+            RETURN 
+                IF ( _maxOfRange = _selectedMonth, 
+                    SELECTEDMEASUREFORMATSTRING (), 
+                    UNICHAR ( 8203 ) 
+                ), 
+        ISSELECTEDMEASURE ( [# Sum of Quantity] ), 
+            VAR _avgUp = [# Average (+Procentage)] 
+            VAR _avgDown = [# Average (-Procentage)] 
+            VAR _value = SELECTEDMEASURE () 
+            RETURN 
+                IF ( _value > _avgUp || _value < _avgDown, 
+                    SELECTEDMEASUREFORMATSTRING (), 
+                    UNICHAR ( 8203 ) 
+                ),
+        SELECTEDMEASUREFORMATSTRING () 
+    )
