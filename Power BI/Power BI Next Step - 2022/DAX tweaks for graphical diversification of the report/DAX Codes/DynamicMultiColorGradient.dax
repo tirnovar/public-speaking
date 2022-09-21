@@ -1,0 +1,51 @@
+DynamicMultiColorGradient =
+    VAR _selectedValue = SELECTEDVALUE ( 'priceList'[Id] )
+    VAR _selectedCategory = SELECTEDVALUE('pricelist'[FocusCategory])
+    VAR _inputTable = 
+        CALCULATETABLE(
+            DISTINCT('priceList'[id]),
+            ALLSELECTED('priceList')
+        )
+    VAR _counter = COUNTROWS(_inputTable) - 1
+    VAR _rankOfRow = 
+        MINX(
+            FILTER(
+                ADDCOLUMNS(
+                    _inputTable,
+                    "@rank",
+                    RANKX(
+                        ALLSELECTED('priceList'),
+                        CALCULATE([# Sum Of Quantity]),
+                        ,
+                        DESC
+                    )-1
+                ),
+                [Id] = _selectedValue
+            ),
+            [@rank]
+        )
+    VAR _lightness =
+        VAR _initialLightness = 0.33
+        VAR _maxLightness = 1
+        VAR _lightnessMover = DIVIDE((_maxLightness-_initialLightness),_counter)
+        RETURN
+        FORMAT(_initialLightness+(_lightnessMover*_rankOfRow),"#%")
+    VAR _green = 
+        VAR _hue = "113"
+        VAR _saturation = "48%"
+        RETURN
+            "hsl("&_hue&","&_saturation&","&_lightness&")"
+    VAR _blue = 
+        VAR _hue = "194" 
+        VAR _saturation = "54%"
+        RETURN
+            "hsl("&_hue&","&_saturation&","&_lightness&")"
+    RETURN
+        SWITCH(
+            TRUE(),
+            _selectedCategory = "Priority",
+                _green,
+            _selectedCategory = "Non-Priority", 
+                _blue,
+            BLANK()
+        )

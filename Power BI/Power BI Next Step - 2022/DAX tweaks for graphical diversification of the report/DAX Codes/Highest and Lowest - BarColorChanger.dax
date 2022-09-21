@@ -1,0 +1,12 @@
+barColorChanger (Highest and Lowest) =
+    VAR _monthRange = ALLSELECTED ( dateKey[Month] )
+    VAR _max = MAXX ( _monthRange, [#SumofQuantity] )
+    VAR _min = MINX ( _monthRange, [#SumofQuantity] )
+    VAR _actState = [#SumofQuantity]
+    RETURN
+    SWITCH(
+        TRUE(),
+        _actState=_max, [baseGreenColor],
+        _actState=_min, [baseRedColor],
+        [baseGrey]
+    )

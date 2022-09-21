@@ -1,0 +1,11 @@
+VAR _dateFilter = ALLSELECTED ( DateKey[Month] ) 
+VAR _highest = MAXX ( _dateFilter, SELECTEDMEASURE () ) 
+VAR _lowest = MINX ( _dateFilter, SELECTEDMEASURE () ) 
+VAR _selectedMeasure = SELECTEDMEASURE () 
+RETURN 
+    SWITCH (
+        TRUE (),
+        _selectedMeasure = _highest, "😍" & SELECTEDMEASUREFORMATSTRING (),
+        _selectedMeasure = _lowest, "😭" & SELECTEDMEASUREFORMATSTRING (),
+        UNICHAR ( 8203 ) 
+    )
